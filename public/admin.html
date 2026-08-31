@@ -35,6 +35,33 @@
         <h2>Товары</h2>
         <p class="hint">Изменения сохраняются на сервере и сразу видны всем посетителям сайта.</p>
 
+        <div class="add-card">
+          <h3>Добавить новый товар</h3>
+          <div class="field">
+            <label>Название</label>
+            <input type="text" id="newTitle" placeholder="Например: Netflix Premium" />
+          </div>
+          <div class="field">
+            <label>Описание</label>
+            <textarea id="newDesc" placeholder="Что входит в товар"></textarea>
+          </div>
+          <div class="field">
+            <label>Цена (₽)</label>
+            <input type="number" id="newPrice" placeholder="1000" />
+          </div>
+          <div class="field">
+            <label>Подпись под ценой (необязательно)</label>
+            <input type="text" id="newNote" placeholder="например: на 1 месяц" />
+          </div>
+          <div class="field">
+            <label>Метка категории (необязательно)</label>
+            <input type="text" id="newTag" placeholder="например: Подписка" />
+          </div>
+          <button class="add-btn" id="addBtn">Добавить товар</button>
+          <span class="save-msg" id="addMsg">Добавлено ✓</span>
+        </div>
+
+        <p class="section-title">Существующие товары</p>
         <div id="editList"></div>
 
         <div class="save-row">
