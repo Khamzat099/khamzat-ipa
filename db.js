@@ -101,6 +101,19 @@ function resetProducts() {
   seedIfEmpty();
 }
 
+function addProduct(product) {
+  const maxOrder = db.prepare("SELECT MAX(sortOrder) AS m FROM products").get().m || 0;
+  const insert = db.prepare(`
+    INSERT INTO products (id, tag, tagClass, title, description, price, priceNote, sortOrder)
+    VALUES (@id, @tag, @tagClass, @title, @description, @price, @priceNote, @sortOrder)
+  `);
+  insert.run({ ...product, sortOrder: maxOrder + 1 });
+}
+
+function deleteProduct(id) {
+  db.prepare("DELETE FROM products WHERE id = ?").run(id);
+}
+
 function hasPassword() {
   return !!db.prepare("SELECT value FROM settings WHERE key = 'admin_salt'").get();
 }
@@ -125,6 +138,8 @@ module.exports = {
   getProducts,
   updateProducts,
   resetProducts,
+  addProduct,
+  deleteProduct,
   hasPassword,
   getPasswordRecord,
   setPassword,
