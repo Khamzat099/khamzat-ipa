@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Админ-панель — khamzat.ipa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="admin-shell">
+
+  <div class="gate" id="gate">
+    <div class="gate-box">
+      <h1 id="gateTitle">Вход в админ-панель</h1>
+      <p id="gateSub">Введите пароль, чтобы редактировать товары.</p>
+      <input type="password" id="pwInput" placeholder="Пароль" autocomplete="off" />
+      <div class="gate-error" id="gateError"></div>
+      <button id="gateBtn">Войти</button>
+    </div>
+  </div>
+
+  <div class="admin-main" id="adminMain">
+    <div class="admin-topbar">
+      <div class="wrap">
+        <div class="logo">khamzat<span class="ipa">.ipa</span> — админ</div>
+        <button class="logout-btn" id="logoutBtn">Выйти</button>
+      </div>
+    </div>
+
+    <div class="admin-body">
+      <div class="wrap">
+        <h2>Товары</h2>
+        <p class="hint">Изменения сохраняются на сервере и сразу видны всем посетителям сайта.</p>
+
+        <div id="editList"></div>
+
+        <div class="save-row">
+          <button class="save-btn" id="saveBtn">Сохранить изменения</button>
+          <span class="save-msg" id="saveMsg">Сохранено ✓</span>
+        </div>
+        <button class="reset-link" id="resetBtn">Сбросить к значениям по умолчанию</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="client.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
