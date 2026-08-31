@@ -131,10 +131,30 @@ function renderEditList() {
         <label>Подпись под ценой</label>
         <input type="text" data-idx="${i}" data-field="priceNote" value="${escapeAttr(p.priceNote)}" />
       </div>
+      <button class="delete-btn" data-delete-id="${p.id}">Удалить товар</button>
     </div>
   `
     )
     .join("");
+
+  list.querySelectorAll("[data-delete-id]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      if (!confirm("Удалить этот товар? Это нельзя отменить.")) return;
+      const token = sessionStorage.getItem(TOKEN_KEY);
+      const res = await fetch(`/api/admin/products/${btn.dataset.deleteId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 401) {
+        forceRelogin("Сессия истекла, войдите заново");
+        return;
+      }
+      if (res.ok) {
+        currentProducts = await res.json();
+        renderEditList();
+      }
+    });
+  });
 }
 
 function escapeAttr(s) {
@@ -205,6 +225,63 @@ document.getElementById("resetBtn").addEventListener("click", async () => {
     currentProducts = await res.json();
     renderEditList();
   }
+});
+
+document.getElementById("addBtn").addEventListener("click", async () => {
+  const title = document.getElementById("newTitle").value.trim();
+  const description = document.getElementById("newDesc").value.trim();
+  const price = Number(document.getElementById("newPrice").value);
+  const priceNote = document.getElementById("newNote").value.trim();
+  const tag = document.getElementById("newTag").value.trim();
+
+  const msg = document.getElementById("addMsg");
+
+  if (!title || !price) {
+    msg.textContent = "Укажите хотя бы название и цену";
+    msg.style.color = "#ff6b6b";
+    msg.classList.add("visible");
+    setTimeout(() => msg.classList.remove("visible"), 2200);
+    return;
+  }
+
+  const token = sessionStorage.getItem(TOKEN_KEY);
+
+  try {
+    const res = await fetch("/api/admin/products", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ title, description, price, priceNote, tag }),
+    });
+
+    if (res.status === 401) {
+      forceRelogin("Сессия истекла, войдите заново");
+      return;
+    }
+
+    if (res.ok) {
+      currentProducts = await res.json();
+      renderEditList();
+      document.getElementById("newTitle").value = "";
+      document.getElementById("newDesc").value = "";
+      document.getElementById("newPrice").value = "";
+      document.getElementById("newNote").value = "";
+      document.getElementById("newTag").value = "";
+      msg.textContent = "Добавлено ✓";
+      msg.style.color = "var(--green)";
+      msg.classList.add("visible");
+    } else {
+      const data = await res.json().catch(() => ({}));
+      msg.textContent = data.error || "Ошибка добавления";
+      msg.style.color = "#ff6b6b";
+      msg.classList.add("visible");
+    }
+  } catch (e) {
+    msg.textContent = "Не удалось связаться с сервером";
+    msg.style.color = "#ff6b6b";
+    msg.classList.add("visible");
+  }
+
+  setTimeout(() => msg.classList.remove("visible"), 2200);
 });
 
 init();
