@@ -93,6 +93,39 @@ app.post("/api/admin/reset", requireAuth, (req, res) => {
   res.json(db.getProducts());
 });
 
+function slugify(text) {
+  return (
+    text
+      .toLowerCase()
+      .replace(/[^a-z0-9а-яё]+/gi, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 30) || "item"
+  );
+}
+
+app.post("/api/admin/products", requireAuth, (req, res) => {
+  const { title, description, price, priceNote, tag, tagClass } = req.body || {};
+  if (!title || typeof price !== "number" || Number.isNaN(price)) {
+    return res.status(400).json({ error: "Укажите название и цену" });
+  }
+  const id = `${slugify(title)}-${crypto.randomBytes(3).toString("hex")}`;
+  db.addProduct({
+    id,
+    tag: tag || "Товар",
+    tagClass: tagClass || "",
+    title,
+    description: description || "",
+    price,
+    priceNote: priceNote || "",
+  });
+  res.json(db.getProducts());
+});
+
+app.delete("/api/admin/products/:id", requireAuth, (req, res) => {
+  db.deleteProduct(req.params.id);
+  res.json(db.getProducts());
+});
+
 app.listen(PORT, () => {
   console.log(`khamzat.ipa server running at http://localhost:${PORT}`);
 });
